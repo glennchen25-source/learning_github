@@ -1,0 +1,42 @@
+1\因此根因是：训练脚本期望你的数据放在固定路径，但那个路径现在是空的或路径写错了。
+2\
+方案 A：正确配置 Kaggle CLI（推荐）
+安装 Kaggle CLI（在你的 conda 环境里）
+pip install kaggle
+获取 API Token
+
+登录 kaggle.com → 右上头像 → Account → 找到 Create New API Token。
+
+会下载 kaggle.json。
+
+放置并设权限
+
+mkdir -p ~/.kaggle
+mv ~/Downloads/kaggle.json ~/.kaggle/   # 按你的实际下载路径
+chmod 600 ~/.kaggle/kaggle.json
+
+
+（可选）用环境变量避免交互
+
+# 从 kaggle.json 里抄出 username 和 key
+export KAGGLE_USERNAME=你的用户名
+export KAGGLE_KEY=你的API密钥
+
+
+之后再跑：
+
+bash scripts/download_data.sh
+
+
+如果脚本依然提示输入，就按提示填你的 Kaggle 用户名（回车后可能还会要 key）。
+
+3\
+403 Forbidden 来自 Kaggle API，不是网络超时。它通常只有这几种原因——按顺序排查，很快能好：
+
+A. 你还没对这个竞赛点“Join/Accept Rules”
+
+用浏览器打开 Carvana Image Masking Challenge 页面（就是脚本在下的那个：carvana-image-masking-challenge）。
+
+点击 Join Competition / Accept Rules（必须登录你生成 kaggle.json 的那个账号）。
+
+回到终端再试。
