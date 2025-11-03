@@ -1,0 +1,33 @@
+# 新环境（Python 3.10 或 3.11 都可）
+/Users/chenwang/miniforge3/bin/conda create -n stgram-mfn python=3.10 -c conda-forge -y
+conda activate stgram-mfn
+
+# 先装 PyTorch 三件套（来自 pytorch 频道）
+conda install pytorch torchvision torchaudio -c pytorch -c conda-forge -y
+
+# 再装其余依赖
+pip install -r requirements.txt
+
+#####
+#1、自检mps有无安装
+(env)
+python - <<'PY'
+import torch, platform, sys, os
+print("torch:", torch.__version__)
+print("mps built:", getattr(torch.backends, "mps", None) and torch.backends.mps.is_built())
+print("mps available:", getattr(torch.backends, "mps", None) and torch.backends.mps.is_available())
+print("python arch:", platform.machine(), " / ", platform.processor())
+print("uname -m:", os.popen("uname -m").read().strip())
+PY
+
+理想输出：
+mps built: True 且 mps available: True
+架构是 arm64（不是 x86_64）
+
+#2、确保环境正确但用不了
+(python)
+import torch
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+x = torch.randn(3,3, device=device)
+y = x @ x.t()
+print("device:", y.device)   # 期望输出 mps:0
